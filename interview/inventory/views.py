@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from datetime import timedelta, datetime
 
 from interview.inventory.models import Inventory, InventoryLanguage, InventoryTag, InventoryType
 from interview.inventory.schemas import InventoryMetaData
@@ -32,7 +33,12 @@ class InventoryListCreateView(APIView):
         return Response(serializer.data, status=200)
     
     def get_queryset(self):
-        return self.queryset.all()
+        queryset = self.queryset.all()
+        created_after_date = self.request.query_params.get('created_after')
+        if (created_after_date is not None):
+            created_after_date = datetime.fromisoformat(created_after_date) + timedelta(days=1)
+            queryset = queryset.filter(created__gt=created_after_date)
+        return queryset
     
 
 class InventoryRetrieveUpdateDestroyView(APIView):

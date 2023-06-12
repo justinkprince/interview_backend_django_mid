@@ -29,7 +29,8 @@ class InventorySerializer(serializers.ModelSerializer):
     language = InventoryLanguageSerializer()
     tags = InventoryTagSerializer(many=True)
     metadata = serializers.JSONField()
+    created = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = Inventory
-        fields = ['id', 'name', 'type', 'language', 'tags', 'metadata']
+        fields = ['id', 'name', 'type', 'language', 'tags', 'metadata', 'created']
